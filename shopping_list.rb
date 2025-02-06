@@ -32,6 +32,18 @@ class ShoppingListManager
     @lists.any? { |list| list.name == list_name }
   end
 
+  # Vérifie si des listes existent
+  def display_lists
+    if @lists.empty?
+      puts "[!] Aucune liste n'existe pour le moment"
+    else
+      puts "Vos listes :"
+      @lists.each_with_index do |list, index|
+        puts "#{index + 1}. #{list.name}"
+      end
+    end
+  end
+
    # Démarre l'application et gère la boucle principale d'interaction
   def start
     loop do
@@ -51,6 +63,7 @@ class ShoppingListManager
           puts "[!] Votre liste à bien été enregistré !"
         end
       when 2
+        display_lists
       when 3
       when 4
         puts "À bientôt"
