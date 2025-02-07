@@ -27,6 +27,15 @@ class ShoppingListManager
     puts "[4] Quitter le programme"
   end
 
+  # Affiche le menu des choix possibles pour interagir avec une liste
+  def display_list_menu
+    puts "==== APPORTEZ VOS MODIFICATIONS POUR LA LISTE SELECTIONNÉ ===="
+    puts "[1] Ajouter un article"
+    puts "[2] Retirer un article"
+    puts "[3] Afficher les articles"
+    puts "[4] Retourner au menu principal"
+  end
+
   # Vérifie si une autre list existe avec le meme nom
   def list_exists?(list_name)
     @lists.any? { |list| list.name == list_name }
@@ -40,6 +49,61 @@ class ShoppingListManager
       puts "Vos listes :"
       @lists.each_with_index do |list, index|
         puts "#{index + 1}. #{list.name}"
+      end
+    end
+  end
+
+  # Demande a l'utilisateur de séléctionner une liste et affiche le menu de la méthode display_list_menu
+  def select_list
+    puts "[+] Séléctionner une liste :"
+    display_lists
+    list_choice = gets.chomp.to_i
+
+    if list_choice > 0 && list_choice <= @lists.length
+      selected_list = @lists[list_choice - 1]
+      handle_list_menu(selected_list)
+    end
+  end
+
+  #  Gère les actions sur la liste sélectionnée
+  def handle_list_menu(selected_list)
+    loop do
+      display_list_menu
+      choice = gets.chomp.to_i
+
+      case choice
+      when 1
+        puts "[+] Veuillez ajoutez un article :"
+        pushed_article = gets.chomp
+        selected_list.items << pushed_article
+        puts "[!] Article bien enregistré dans #{selected_list.name}"
+      when 2
+        puts "[+] Voici vos articles :"
+        selected_list.items.each_with_index do |item, index|
+          puts "#{index + 1}. #{item}"
+         end
+         puts "[+] Choisissez le numéro de l'article à retirer :"
+         item_choice = gets.chomp.to_i
+         if item_choice > 0 && item_choice <= selected_list.items.length
+          selected_list.items.delete_at(item_choice - 1)
+          puts "[!] Article supprimé avec succès !"
+         else
+          puts "[!] Numéro d'article !nV@lid€"
+         end
+        when 3
+          if selected_list.items.empty?
+            puts "[!] Aucun article dans cette liste"
+          else
+           puts "[+] Voici vos articles :"
+            selected_list.items.each_with_index do |item, index|
+              puts "#{index + 1}. #{item}"
+            end
+          end
+        when 4
+          puts "<-- Retour au menu principal"
+          break
+        else
+          puts "[!] Choix !nV@lid€ !"
       end
     end
   end
@@ -65,6 +129,7 @@ class ShoppingListManager
       when 2
         display_lists
       when 3
+        select_list
       when 4
         puts "À bientôt"
         break
